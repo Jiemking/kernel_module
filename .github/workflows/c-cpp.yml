@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        kernel_version: [ '4.14.180','4.14.186','4.14.186cfi','4.19.113', '4.19.157','5.4', '5.10', '5.15','6.1' ]
+        kernel_version: [ '4.14.180','4.14.186','4.14.186cfi','4.19.113', '4.19.157','5.4', '5.10', '5.15','6.1', '4.19.157op' ]
     steps:
 
       - uses: actions/checkout@v4
@@ -222,7 +222,7 @@ jobs:
              git clone https://github.com/OnePlusOSS/android_kernel_modules_and_devicetree_oneplus_sm8250.git -b oneplus/sm8250_t_13.1_op8 --depth=1 ./
 
              mkdir android-kernel && cd android-kernel
-             git clone https://github.com/OnePlusOSS/android_kernel_oneplus_sm8250.git -b oneplus/sm8250_t_13.1_op8 --depth=1 kernel
+             git clone https://github.com/OnePlusOSS/android_kernel_oneplus_sm8250.git -b oneplus/sm8250_t_13.0_op8 --depth=1 kernel
 
              cd kernel
              ln -sf $GITHUB_WORKSPACE/kernel_module/kernel $(pwd)/drivers/km
