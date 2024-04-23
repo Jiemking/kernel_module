@@ -227,10 +227,10 @@ jobs:
              cd kernel
              ln -sf $GITHUB_WORKSPACE/kernel_module/kernel $(pwd)/drivers/km
 
-             make CC=clang ARCH=arm64 O=out vendor/kona-perf_defconfig
-             make CC=clang ARCH=arm64 O=out CONFIG_LTO_CLANG=y CONFIG_LTO_NONE=n CONFIG_LTO_CLANG_THIN=y CONFIG_LTO_CLANG_FULL=n prepare -j$(nproc --all)
-             make CC=clang ARCH=arm64 O=out CONFIG_LTO_CLANG=y CONFIG_LTO_NONE=n CONFIG_LTO_CLANG_THIN=y CONFIG_LTO_CLANG_FULL=n scripts -j$(nproc --all)
-             make CC=clang ARCH=arm64 O=out CONFIG_LTO_CLANG=y CONFIG_LTO_NONE=n CONFIG_LTO_CLANG_THIN=y CONFIG_LTO_CLANG_FULL=n modules_prepare -j$(nproc --all)
+             make CC=clang ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out vendor/kona-perf_defconfig
+             make CC=clang ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out CONFIG_LTO_CLANG=y CONFIG_LTO_NONE=n CONFIG_LTO_CLANG_THIN=y CONFIG_LTO_CLANG_FULL=n prepare -j$(nproc --all)
+             make CC=clang ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out CONFIG_LTO_CLANG=y CONFIG_LTO_NONE=n CONFIG_LTO_CLANG_THIN=y CONFIG_LTO_CLANG_FULL=n scripts -j$(nproc --all)
+             make CC=clang ARCH=arm64 LLVM=1 LLVM_IAS=1 O=out CONFIG_LTO_CLANG=y CONFIG_LTO_NONE=n CONFIG_LTO_CLANG_THIN=y CONFIG_LTO_CLANG_FULL=n modules_prepare -j$(nproc --all)
              make -C $(pwd)/out M=$(pwd)/drivers/km ARCH=arm64 SUBARCH=arm64 modules CC=clang LD=ld.lld -j$(nproc --all)
              mv $(pwd)/drivers/km/hack.ko $GITHUB_WORKSPACE/results/hack.ko
           fi
