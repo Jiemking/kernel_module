@@ -374,7 +374,7 @@ static void sample_hbp_handler(struct perf_event *bp,
 		sve_sync_to_fpsimd(target);
 		newstate = target->thread.uw.fpsimd_state;
 #else
-		newstate = target->thread.fpsimd_state.user_fpsimd
+		newstate = target->thread.fpsimd_state.user_fpsimd;
 #endif
 
 		for (i = 0; i < 32; i++) {
