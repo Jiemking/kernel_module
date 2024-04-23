@@ -222,7 +222,7 @@ jobs:
              git clone https://github.com/OnePlusOSS/android_kernel_modules_and_devicetree_oneplus_sm8250.git -b oneplus/sm8250_t_13.1_op8 --depth=1 ./
 
              mkdir android-kernel && cd android-kernel
-             git clone https://github.com/OnePlusOSS/android_kernel_oneplus_sm8250.git -b oneplus/sm8250_t_13.0_op8 --depth=1 kernel
+             git clone https://github.com/OnePlusOSS/android_kernel_oneplus_sm8250.git -b oneplus/sm8250_t_13.0.0_op8 --depth=1 kernel
 
              cd kernel
              ln -sf $GITHUB_WORKSPACE/kernel_module/kernel $(pwd)/drivers/km
