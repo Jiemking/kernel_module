@@ -371,7 +371,7 @@ static void sample_hbp_handler(struct perf_event *bp,
 	if (do_vregs_set) {
 		target = current;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 16, 0)
-		sve_sync_to_fpsimd(target);
+		//sve_sync_to_fpsimd(target);
 		newstate = target->thread.uw.fpsimd_state;
 #else
 		newstate = target->thread.fpsimd_state.user_fpsimd;
@@ -391,11 +391,16 @@ static void sample_hbp_handler(struct perf_event *bp,
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 16, 0)
 		target->thread.uw.fpsimd_state = newstate;
-		sve_sync_from_fpsimd_zeropad(target);
+		//sve_sync_from_fpsimd_zeropad(target);
+		target->thread.fpsimd_cpu = NR_CPUS;
+		barrier();
+		set_tsk_thread_flag(target, TIF_FOREIGN_FPSTATE);
+		barrier();
 #else
 		target->thread.fpsimd_state.user_fpsimd = newstate;
+		target->thread.fpsimd_state.cpu = NR_CPUS;
 #endif
-		fpsimd_flush_task_state(target);
+		//fpsimd_flush_task_state(target);
 	}
 
 	for (i = 0; i < 31; i++) {
