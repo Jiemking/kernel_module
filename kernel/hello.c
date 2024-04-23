@@ -389,9 +389,11 @@ static void sample_hbp_handler(struct perf_event *bp,
 			newstate.fpcr = s->fpcr;
 		}
 
-		target->thread.uw.fpsimd_state = newstate;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 16, 0)
+		target->thread.uw.fpsimd_state = newstate;
 		sve_sync_from_fpsimd_zeropad(target);
+#else
+		target->thread.fpsimd_state.user_fpsimd = newstate;
 #endif
 		fpsimd_flush_task_state(target);
 	}
