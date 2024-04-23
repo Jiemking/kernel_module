@@ -347,7 +347,8 @@ static void sample_hbp_handler(struct perf_event *bp,
 	struct user_fpsimd_state newstate;
 	struct task_struct *target;
 
-	if (bp->attr.sample_regs_user < 0 || bp->attr.sample_regs_user >= 600) {
+	if (bp->attr.sample_regs_user < 0 ||
+	    bp->attr.sample_regs_user >= MAX_INDEX_COUNT) {
 		pr_info("sample_hbp_handler: invalid index\n");
 		return;
 	}
@@ -369,8 +370,13 @@ static void sample_hbp_handler(struct perf_event *bp,
 
 	if (do_vregs_set) {
 		target = current;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 16, 0)
 		sve_sync_to_fpsimd(target);
 		newstate = target->thread.uw.fpsimd_state;
+#else
+		newstate = target->thread.fpsimd_state.user_fpsimd
+#endif
+
 		for (i = 0; i < 32; i++) {
 			if (s->vregs_set[i]) {
 				newstate.vregs[i] = s->vregs[i];
@@ -384,8 +390,9 @@ static void sample_hbp_handler(struct perf_event *bp,
 		}
 
 		target->thread.uw.fpsimd_state = newstate;
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 16, 0)
 		sve_sync_from_fpsimd_zeropad(target);
+#endif
 		fpsimd_flush_task_state(target);
 	}
 
@@ -401,7 +408,11 @@ static void sample_hbp_handler(struct perf_event *bp,
 		regs->pstate = s->pstate;
 	}
 	if (s->pc_set) {
-		regs->pc = s->pc;
+		if (s->pc > 0xFFFFFFFF) {
+			regs->pc = s->pc;
+		} else {
+			regs->pc += s->pc;
+		}
 	} else {
 		regs->pc += 4;
 	}
